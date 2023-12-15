@@ -1,1 +1,26 @@
+pipeline{
+  agent any
+    Stages{
+   stage('remove database container'){
+        steps{
+          sh 'sudo docker container rm -f mysql-db'
+        }
+      }
+      stage('database container'){
+        steps{
+          sh 'sudo docker container run -dt --name mysql-db -p 3306:3306 -e MYSQL_ROOT_PASSWORD=Qwerty@123 mysql:latest'
+        }
+      }
+      stage('Docker build backend'){
+        steps{
+          sh 'cd lms-team-1-praneeth/LMS-BE && sudo docker build -t backend .'
+        }
+      }
+      stage('Docker container'){
+        steps{
+          sh 'sudo docker container run -dt --name be -p 8081:8080 backend'
+        }
+      }
+    }
+ }
 
